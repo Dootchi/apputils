@@ -1,0 +1,124 @@
+#import "AntiScrapingHandler.h"
+
+#import <DpSDK/DpSDK.h>
+#import <TargetConditionals.h>
+
+@interface AntiScrapingHandler ()
+@property(nonatomic, assign) BOOL initialized;
+@property(nonatomic, strong) dispatch_queue_t workerQueue;
+@end
+
+@implementation AntiScrapingHandler
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    _workerQueue = dispatch_queue_create("com.dootchi.apputils.anti-scraping",
+                                         DISPATCH_QUEUE_SERIAL);
+  }
+  return self;
+}
+
+- (void)handleMethodCall:(FlutterMethodCall *)call
+                  result:(FlutterResult)result {
+  if ([call.method isEqualToString:@"antiScraping.initialize"]) {
+    [self runAsyncWithResult:result operation:^id _Nullable(FlutterError **error) {
+      [self ensureInitialized:error];
+      return nil;
+    }];
+    return;
+  }
+
+  if ([call.method isEqualToString:@"antiScraping.getTicket"]) {
+    [self runAsyncWithResult:result operation:^id _Nullable(FlutterError **error) {
+      if (![self ensureInitialized:error]) {
+        return nil;
+      }
+      return [DpSDK dpGetTicket] ?: @"";
+    }];
+    return;
+  }
+
+  if ([call.method isEqualToString:@"antiScraping.reportDeviceStatus"]) {
+    NSString *label = nil;
+    if ([call.arguments isKindOfClass:[NSDictionary class]]) {
+      id value = ((NSDictionary *)call.arguments)[@"label"];
+      if ([value isKindOfClass:[NSString class]]) {
+        label = value;
+      }
+    }
+    if (label.length == 0) {
+      result([FlutterError errorWithCode:@"invalid_argument"
+                                 message:@"label must not be empty."
+                                 details:nil]);
+      return;
+    }
+
+    [self runAsyncWithResult:result operation:^id _Nullable(FlutterError **error) {
+      if (![self ensureInitialized:error]) {
+        return nil;
+      }
+      return @([DpSDK ReportDeviceStatus:label]);
+    }];
+    return;
+  }
+
+  result(FlutterMethodNotImplemented);
+}
+
+- (BOOL)ensureInitialized:(FlutterError **)error {
+#if TARGET_OS_SIMULATOR
+  if (error != NULL) {
+    *error = [FlutterError
+        errorWithCode:@"sdk_unavailable"
+               message:@"DpSDK is unavailable in the iOS simulator. Use a physical device."
+               details:nil];
+  }
+  return NO;
+#else
+  if (self.initialized) {
+    return YES;
+  }
+
+  @try {
+    if (![DpSDK dpInit]) {
+      if (error != NULL) {
+        *error = [FlutterError errorWithCode:@"initialization_failed"
+                                     message:@"DpSDK initialization returned false."
+                                     details:nil];
+      }
+      return NO;
+    }
+    self.initialized = YES;
+    return YES;
+  } @catch (NSException *exception) {
+    if (error != NULL) {
+      *error = [FlutterError errorWithCode:@"initialization_failed"
+                                   message:@"DpSDK initialization raised an exception."
+                                   details:exception.reason];
+    }
+    return NO;
+  }
+#endif
+}
+
+- (void)runAsyncWithResult:(FlutterResult)result
+                 operation:(id _Nullable (^)(FlutterError **error))operation {
+  dispatch_async(self.workerQueue, ^{
+    FlutterError *error = nil;
+    id value = nil;
+    @try {
+      value = operation(&error);
+    } @catch (NSException *exception) {
+      error = [FlutterError errorWithCode:@"native_error"
+                                  message:@"Unexpected DpSDK exception."
+                                  details:exception.reason];
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      result(error ?: value);
+    });
+  });
+}
+
+@end

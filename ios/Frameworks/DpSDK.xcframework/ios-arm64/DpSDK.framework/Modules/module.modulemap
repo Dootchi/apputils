@@ -1,0 +1,6 @@
+framework module DpSDK {
+  umbrella header "DpSDK.h"
+  export *
+
+  module * { export * }
+}
