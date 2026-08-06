@@ -1,3 +1,7 @@
+import com.android.build.gradle.LibraryExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 group = "com.dootchi.apputils"
 version = "0.1.0"
 
@@ -14,19 +18,10 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+apply(plugin = "com.android.library")
+apply(plugin = "org.jetbrains.kotlin.android")
 
-plugins {
-    id("com.android.library")
-    id("kotlin-android")
-}
-
-android {
+configure<LibraryExtension> {
     namespace = "com.dootchi.apputils"
 
     compileSdk = 36
@@ -34,10 +29,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     sourceSets {
@@ -72,7 +63,13 @@ android {
     }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
+}
+
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.mockito:mockito-core:5.0.0")
+    add("testImplementation", "org.jetbrains.kotlin:kotlin-test")
+    add("testImplementation", "org.mockito:mockito-core:5.0.0")
 }
