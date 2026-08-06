@@ -3,6 +3,7 @@ package com.dootchi.apputils
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.Process
 import com.dprotect.DpSdk
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -15,7 +16,13 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
     private val mainHandler = Handler(Looper.getMainLooper())
     private val executor: ExecutorService =
         Executors.newSingleThreadExecutor { runnable ->
-            Thread(runnable, "apputils-anti-scraping").apply { isDaemon = true }
+            Thread(
+                {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND)
+                    runnable.run()
+                },
+                "apputils-anti-scraping",
+            ).apply { isDaemon = true }
         }
     private val initializationLock = Any()
 

@@ -16,8 +16,8 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
 - (instancetype)init {
   self = [super init];
   if (self) {
-    _workerQueue = dispatch_queue_create("com.dootchi.apputils.anti-scraping",
-                                         DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_attr_t queueAttributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_UTILITY, 0);
+    _workerQueue = dispatch_queue_create("com.dootchi.apputils.anti-scraping", queueAttributes);
   }
   return self;
 }
