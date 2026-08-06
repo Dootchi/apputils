@@ -3,6 +3,9 @@
 #import <DpSDK/DpSDK.h>
 #import <TargetConditionals.h>
 
+static NSString *const AppUtilsCuidArgumentKey = @"cuid";
+static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
+
 @interface AntiScrapingHandler ()
 @property(nonatomic, assign) BOOL initialized;
 @property(nonatomic, strong) dispatch_queue_t workerQueue;
@@ -22,7 +25,16 @@
 - (void)handleMethodCall:(FlutterMethodCall *)call
                   result:(FlutterResult)result {
   if ([call.method isEqualToString:@"antiScraping.initialize"]) {
+    NSString *cuid = @"";
+    if ([call.arguments isKindOfClass:[NSDictionary class]]) {
+      id value = ((NSDictionary *)call.arguments)[AppUtilsCuidArgumentKey];
+      if ([value isKindOfClass:[NSString class]]) {
+        cuid = value;
+      }
+    }
+
     [self runAsyncWithResult:result operation:^id _Nullable(FlutterError **error) {
+      [[NSUserDefaults standardUserDefaults] setObject:cuid forKey:AppUtilsDpCuidKey];
       [self ensureInitialized:error];
       return nil;
     }];

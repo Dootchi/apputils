@@ -25,6 +25,7 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "antiScraping.initialize" -> runAsync(result) {
+                persistCuid(call.argument<String>(CUID_ARGUMENT_KEY).orEmpty())
                 ensureInitialized()
                 null
             }
@@ -45,6 +46,22 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
 
     fun close() {
         executor.shutdown()
+    }
+
+    private fun persistCuid(cuid: String) {
+        val committed = applicationContext
+            .getSharedPreferences(
+                "${applicationContext.packageName}_preferences",
+                Context.MODE_PRIVATE,
+            ).edit()
+            .putString(DP_CUID_KEY, cuid)
+            .commit()
+        if (!committed) {
+            throw AntiScrapingException(
+                code = "storage_failed",
+                message = "Failed to persist DP_CUID.",
+            )
+        }
     }
 
     private fun ensureInitialized() {
@@ -93,6 +110,11 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
                 }
             }
         }
+    }
+
+    private companion object {
+        const val CUID_ARGUMENT_KEY = "cuid"
+        const val DP_CUID_KEY = "DP_CUID"
     }
 }
 

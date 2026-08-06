@@ -15,8 +15,12 @@ class MethodChannelAppUtils extends AppUtilsPlatform {
   );
 
   @override
-  Future<void> initializeAntiScraping() {
-    return _invoke<void>(antiScrapingChannel, 'antiScraping.initialize');
+  Future<void> initializeAntiScraping(String cuid) {
+    return _invoke<void>(
+      antiScrapingChannel,
+      'antiScraping.initialize',
+      <String, Object?>{'cuid': cuid},
+    );
   }
 
   @override

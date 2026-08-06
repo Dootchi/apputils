@@ -7,8 +7,11 @@ final class AntiScraping {
   /// Initializes the native SDK.
   ///
   /// Calls are idempotent and serialized by the native implementation.
-  Future<void> initialize() =>
-      AppUtilsPlatform.instance.initializeAntiScraping();
+  Future<void> initialize({required String? cuid}) {
+    return AppUtilsPlatform.instance.initializeAntiScraping(
+      cuid?.trim().isNotEmpty == true ? cuid!.trim() : '',
+    );
+  }
 
   /// Returns the ticket that should be attached to the protected request.
   ///

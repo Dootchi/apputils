@@ -30,7 +30,7 @@ void main() {
   });
 
   test('uses the isolated anti-scraping channel contract', () async {
-    await platform.initializeAntiScraping();
+    await platform.initializeAntiScraping('user-001');
     expect(await platform.getAntiScrapingTicket(), 'native-ticket');
     expect(await platform.reportAntiScrapingDeviceStatus('login'), isTrue);
 
@@ -39,7 +39,14 @@ void main() {
       'antiScraping.getTicket',
       'antiScraping.reportDeviceStatus',
     ]);
+    expect(calls.first.arguments, {'cuid': 'user-001'});
     expect(calls.last.arguments, {'label': 'login'});
+  });
+
+  test('passes empty string for null-like cuid semantics', () async {
+    await platform.initializeAntiScraping('');
+    expect(calls.single.method, 'antiScraping.initialize');
+    expect(calls.single.arguments, {'cuid': ''});
   });
 
   test('converts platform errors to AppUtilsException', () async {

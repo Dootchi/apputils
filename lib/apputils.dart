@@ -30,14 +30,17 @@ final class AppUtils {
   /// method is optional. It is useful when an app wants failures to surface at
   /// startup instead of during its first request.
   Future<void> initialize({
+    required String? cuid,
     Set<AppUtilsCapability> capabilities = const {
       AppUtilsCapability.antiScraping,
     },
   }) async {
+    final normalizedCuid = cuid?.trim().isNotEmpty == true ? cuid!.trim() : '';
+
     for (final capability in capabilities) {
       switch (capability) {
         case AppUtilsCapability.antiScraping:
-          await antiScraping.initialize();
+          await antiScraping.initialize(cuid: normalizedCuid);
       }
     }
   }

@@ -19,7 +19,7 @@ abstract class AppUtilsPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initializeAntiScraping() {
+  Future<void> initializeAntiScraping(String cuid) {
     throw UnimplementedError(
       'initializeAntiScraping() has not been implemented.',
     );

@@ -9,14 +9,16 @@ class MockAppUtilsPlatform
     implements AppUtilsPlatform {
   var initializationCount = 0;
   String ticket = 'test-ticket';
+  String? initializedCuid;
   String? reportedLabel;
 
   @override
   Future<String> getAntiScrapingTicket() async => ticket;
 
   @override
-  Future<void> initializeAntiScraping() async {
+  Future<void> initializeAntiScraping(String cuid) async {
     initializationCount += 1;
+    initializedCuid = cuid;
   }
 
   @override
@@ -44,11 +46,29 @@ void main() {
   });
 
   test('initialize delegates selected capabilities', () async {
-    await AppUtils.instance.initialize();
+    await AppUtils.instance.initialize(cuid: 'user-001');
     expect(platform.initializationCount, 1);
+    expect(platform.initializedCuid, 'user-001');
 
-    await AppUtils.instance.initialize(capabilities: const {});
+    await AppUtils.instance.initialize(
+      cuid: 'user-002',
+      capabilities: const {},
+    );
     expect(platform.initializationCount, 1);
+  });
+
+  test('initialize converts null cuid to empty string before delegating',
+      () async {
+    await AppUtils.instance.initialize(cuid: null);
+    expect(platform.initializationCount, 1);
+    expect(platform.initializedCuid, '');
+  });
+
+  test('initialize converts blank cuid to empty string before delegating',
+      () async {
+    await AppUtils.instance.initialize(cuid: '  ');
+    expect(platform.initializationCount, 1);
+    expect(platform.initializedCuid, '');
   });
 
   test('anti-scraping facade delegates ticket and report calls', () async {

@@ -7,6 +7,7 @@ void main() {
 
   testWidgets('native anti-scraping channel responds', (_) async {
     try {
+      await AppUtils.instance.initialize(cuid: 'example-cuid');
       final ticket = await AppUtils.instance.antiScraping.getTicket();
       expect(ticket, isA<String>());
     } on AppUtilsException catch (error) {

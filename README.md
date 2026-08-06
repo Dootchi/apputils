@@ -34,8 +34,12 @@ flutter pub get
 ```dart
 import 'package:apputils/apputils.dart';
 
-await AppUtils.instance.initialize();
+await AppUtils.instance.initialize(cuid: 'your-cuid');
 ```
+
+`cuid` 允许传 `null` 或空白字符串，内部都会按空串写入原生配置，避免初始化阶段因为
+参数问题抛异常。如果业务依赖 CUID 参与 SDK 的首次初始化，请先显式调用
+`initialize(cuid: ...)`，不要只依赖下面的懒初始化路径。
 
 也可以直接获取 ticket，此时 SDK 会自动进行一次幂等的延迟初始化：
 
