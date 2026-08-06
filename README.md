@@ -11,7 +11,7 @@ dependencies:
   apputils:
     git:
       url: git@github.com:Dootchi/apputils.git
-      ref: v0.1.0
+      ref: v0.1.1
 ```
 
 然后执行：
@@ -92,12 +92,12 @@ ios/Classes/<Handler>.m     iOS 生命周期、线程和 SDK 适配
 - iOS 内部版本 `2026080100`，真机 slice 未修改；仓库额外生成了仅用于编译的
   simulator 空实现，模拟器不会生成 ticket。
 
-iOS 厂商包未附带隐私清单或数据采集说明，但其二进制引用了设备信息、磁盘空间、
-传感器和 `NSUserDefaults` 等 API。发布 App Store 前必须让 SDK 提供方确认实际采集、
-上传行为和 Apple Required Reason API 的准确理由，并据此更新
-`ios/Resources/PrivacyInfo.xcprivacy`、在 Podspec 中启用该资源，以及更新宿主应用的隐私
-声明。目前空清单不会被打入产物，避免错误声明“未采集数据”。不要填写与实际行为不符
-的理由。
+  iOS 厂商包未附带隐私清单或数据采集说明，但其二进制引用了设备信息、磁盘空间、
+  传感器和 `NSUserDefaults` 等 API。发布 App Store 前必须让 SDK 提供方确认实际采集、
+  上传行为和 Apple Required Reason API 的准确理由，并据此更新
+  `ios/Resources/PrivacyInfo.xcprivacy`、在 Podspec 中启用该资源，以及更新宿主应用的隐私
+  声明。目前空清单不会被打入产物，避免错误声明“未采集数据”。不要填写与实际行为不符
+  的理由。
 
 ## 开发验证
 
