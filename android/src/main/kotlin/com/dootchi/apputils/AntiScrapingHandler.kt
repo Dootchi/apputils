@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import android.util.Log
 import com.dprotect.DpSdk
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -39,7 +40,9 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
 
             "antiScraping.getTicket" -> runAsync(result) {
                 ensureInitialized()
-                DpSdk.getTicket().orEmpty()
+                val ticket = DpSdk.getTicket().orEmpty()
+                Log.i("DpSdk", "getTicket -> $ticket")
+                ticket
             }
 
             "antiScraping.reportDeviceStatus" -> {
@@ -78,6 +81,7 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
             if (initialized) return
 
             if (!DpSdk.isLibraryLoaded()) {
+                Log.e("DpSdk", "Library is not loaded: ${DpSdk.libraryLoadError()}")
                 throw AntiScrapingException(
                     code = "sdk_unavailable",
                     message = "DpSDK cannot be loaded on this Android device.",
@@ -89,6 +93,7 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
                 DpSdk.init(applicationContext)
                 initialized = true
             } catch (error: Throwable) {
+                Log.e("DpSdk", "DpSDK initialization failed", error)
                 throw AntiScrapingException(
                     code = "initialization_failed",
                     message = "DpSDK initialization failed.",
@@ -104,10 +109,12 @@ internal class AntiScrapingHandler(context: Context) : MethodChannel.MethodCallH
                 val value = operation()
                 mainHandler.post { result.success(value) }
             } catch (error: AntiScrapingException) {
+                Log.e("DpSdk", "AntiScrapingException: ${error.code} ${error.message} ${error.details}")
                 mainHandler.post {
                     result.error(error.code, error.message, error.details)
                 }
             } catch (error: Throwable) {
+                Log.e("DpSdk", "Unexpected DpSDK failure", error)
                 mainHandler.post {
                     result.error(
                         "native_error",

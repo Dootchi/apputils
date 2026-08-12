@@ -46,7 +46,9 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
       if (![self ensureInitialized:error]) {
         return nil;
       }
-      return [DpSDK dpGetTicket] ?: @"";
+      NSString *ticket = [DpSDK dpGetTicket] ?: @"";
+      NSLog(@"[DpSdk] getTicket -> %@", ticket);
+      return ticket;
     }];
     return;
   }
@@ -80,6 +82,7 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
 
 - (BOOL)ensureInitialized:(FlutterError **)error {
 #if TARGET_OS_SIMULATOR
+  NSLog(@"[DpSdk] sdk_unavailable: simulator is not supported");
   if (error != NULL) {
     *error = [FlutterError
         errorWithCode:@"sdk_unavailable"
@@ -94,6 +97,7 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
 
   @try {
     if (![DpSDK dpInit]) {
+      NSLog(@"[DpSdk] initialization_failed: dpInit returned false");
       if (error != NULL) {
         *error = [FlutterError errorWithCode:@"initialization_failed"
                                      message:@"DpSDK initialization returned false."
@@ -104,6 +108,7 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
     self.initialized = YES;
     return YES;
   } @catch (NSException *exception) {
+    NSLog(@"[DpSdk] initialization_failed exception: %@", exception.reason);
     if (error != NULL) {
       *error = [FlutterError errorWithCode:@"initialization_failed"
                                    message:@"DpSDK initialization raised an exception."
@@ -122,6 +127,7 @@ static NSString *const AppUtilsDpCuidKey = @"DP_CUID";
     @try {
       value = operation(&error);
     } @catch (NSException *exception) {
+      NSLog(@"[DpSdk] native_error exception: %@", exception.reason);
       error = [FlutterError errorWithCode:@"native_error"
                                   message:@"Unexpected DpSDK exception."
                                   details:exception.reason];

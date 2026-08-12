@@ -1,6 +1,7 @@
 package com.dprotect;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * JNI bridge required by libdpsdk.so.
@@ -17,6 +18,7 @@ public final class DpSdk {
             System.loadLibrary("dpsdk");
         } catch (Throwable error) {
             loadError = error;
+            Log.e("DpSdk", "Failed to load libdpsdk.so", error);
         }
         LIBRARY_LOAD_ERROR = loadError;
     }

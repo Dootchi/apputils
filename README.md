@@ -11,7 +11,7 @@ dependencies:
   apputils:
     git:
       url: git@github.com:Dootchi/apputils.git
-      ref: v0.1.3
+      ref: v0.1.4
 ```
 
 然后执行：
