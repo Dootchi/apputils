@@ -3,7 +3,7 @@
 #import "AntiScrapingHandler.h"
 
 static NSString *const AppUtilsAntiScrapingChannel =
-    @"com.dootchi.apputils/anti_scraping";
+    @"ai.socialapps.apputils/anti_scraping";
 
 @implementation ApputilsPlugin
 

@@ -7,7 +7,9 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final platform = MethodChannelAppUtils();
-  const channel = MethodChannel(MethodChannelAppUtils.antiScrapingChannelName);
+  // Keep the mock endpoint independent of the Dart implementation constant.
+  // A channel rename must still match the native endpoint contract.
+  const channel = MethodChannel('ai.socialapps.apputils/anti_scraping');
   final calls = <MethodCall>[];
 
   setUp(() {

@@ -1,6 +1,6 @@
 name: apputils
-description: Reusable native capabilities for Dootchi Flutter applications.
-version: 0.1.0
+description: Reusable native capabilities for Flutter applications.
+version: 1.0.5
 homepage: https://github.com/Dootchi/apputils
 repository: https://github.com/Dootchi/apputils
 publish_to: none
@@ -23,7 +23,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.dootchi.apputils
+        package: ai.socialapps.apputils
         pluginClass: ApputilsPlugin
       ios:
         pluginClass: ApputilsPlugin

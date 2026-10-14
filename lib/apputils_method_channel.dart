@@ -7,7 +7,7 @@ import 'src/apputils_exception.dart';
 /// Method-channel implementation of [AppUtilsPlatform].
 class MethodChannelAppUtils extends AppUtilsPlatform {
   static const String antiScrapingChannelName =
-      'com.dootchi.apputils/anti_scraping';
+      'ai.socialapps.apputils/anti_scraping';
 
   @visibleForTesting
   final MethodChannel antiScrapingChannel = const MethodChannel(

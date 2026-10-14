@@ -1,4 +1,4 @@
-package com.dootchi.apputils
+package ai.socialapps.apputils
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel
@@ -25,6 +25,6 @@ class ApputilsPlugin : FlutterPlugin {
     }
 
     private companion object {
-        const val ANTI_SCRAPING_CHANNEL = "com.dootchi.apputils/anti_scraping"
+        const val ANTI_SCRAPING_CHANNEL = "ai.socialapps.apputils/anti_scraping"
     }
 }

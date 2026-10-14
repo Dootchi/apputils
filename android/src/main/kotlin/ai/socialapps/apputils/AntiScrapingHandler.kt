@@ -1,4 +1,4 @@
-package com.dootchi.apputils
+package ai.socialapps.apputils
 
 import android.content.Context
 import android.os.Handler

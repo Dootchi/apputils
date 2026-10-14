@@ -4,8 +4,8 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'apputils'
-  s.version          = '0.1.0'
-  s.summary          = 'Reusable native capabilities for Dootchi Flutter apps.'
+  s.version          = '1.0.5'
+  s.summary          = 'Reusable native capabilities for Flutter apps.'
   s.description      = <<-DESC
 Shared Flutter utilities with independently extensible native capabilities.
                        DESC

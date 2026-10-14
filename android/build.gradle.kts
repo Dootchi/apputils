@@ -2,8 +2,8 @@ import com.android.build.gradle.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-group = "com.dootchi.apputils"
-version = "0.1.0"
+group = "ai.socialapps.apputils"
+version = "1.0.5"
 
 buildscript {
     val kotlinVersion = "2.2.20"
@@ -22,7 +22,7 @@ apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.android")
 
 configure<LibraryExtension> {
-    namespace = "com.dootchi.apputils"
+    namespace = "ai.socialapps.apputils"
 
     compileSdk = 36
 

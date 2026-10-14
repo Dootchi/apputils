@@ -11,7 +11,7 @@ dependencies:
   apputils:
     git:
       url: git@github.com:Dootchi/apputils.git
-      ref: v0.1.4
+      ref: v1.0.5
 ```
 
 然后执行：
@@ -19,6 +19,12 @@ dependencies:
 ```shell
 flutter pub get
 ```
+
+从旧版本升级到 `v1.0.5`：更新 Git `ref` 后执行 `flutter pub get`，提交依赖锁文件，
+并重新编译安装应用；原生插件的变更无法通过热重载生效。Dart 包名和 `AppUtils`
+公开接口保持不变，常规业务调用无需调整。Android 包名与三端 MethodChannel
+统一使用 `ai.socialapps.apputils`；如果业务绕过封装直接引用原生类或通道，需要同步迁移。
+不要混用新 Dart 代码与旧原生插件，也不要手改自动生成的插件注册文件。
 
 平台要求：
 
@@ -69,7 +75,7 @@ final reported = await AppUtils.instance.antiScraping
 ```text
 lib/src/<capability>/       强类型 Dart 门面
 AppUtilsPlatform            跨平台契约
-com.dootchi.apputils/<capability>
+ai.socialapps.apputils/<capability>
                             独立 MethodChannel
 android/.../<Handler>.kt    Android 生命周期、线程和 SDK 适配
 ios/Classes/<Handler>.m     iOS 生命周期、线程和 SDK 适配
